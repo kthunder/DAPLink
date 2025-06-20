@@ -241,7 +241,18 @@ uint32_t DAP_ProcessVendorCommand(const uint8_t *request, uint8_t *response) {
     case ID_DAP_Vendor28: break;
     case ID_DAP_Vendor29: break;
     case ID_DAP_Vendor30: break;
-    case ID_DAP_Vendor31: break;
+    case ID_DAP_Vendor31: {
+        num += 1U << 16;           // increment request count
+        if (*request == 1U) {      // when first command data byte is 1
+    extern void cJtag_active(void);
+    extern uint8_t cJtag_enabled;
+            cJtag_enabled = 1;       // enable cJTAG
+            cJtag_active(); 
+            *response++ = DAP_OK;
+            num++;
+        }
+        break;
+    }
     default: break;
   }
 

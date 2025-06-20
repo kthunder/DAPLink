@@ -23,6 +23,7 @@ tool_specific:
                 - -ffreestanding
                 - -fverbose-asm
                 - -mno-unaligned-access
+                - -fdiagnostics-color=always
             ld_flags:
                 - --specs=nano.specs
                 - --specs=nosys.specs
@@ -31,6 +32,7 @@ tool_specific:
                 - -Wl,--gc-sections
                 - -Wl,--no-wchar-size-warning
                 - -Wl,--print-memory-usage
+                - -Wl,--no-warn-rwx-segments
             pre_build_script:
                 - tools/pre_build_script.py
             post_build_script:

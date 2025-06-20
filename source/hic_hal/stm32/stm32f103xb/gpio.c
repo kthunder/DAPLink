@@ -124,8 +124,8 @@ void gpio_init(void)
     __HAL_RCC_AFIO_CLK_ENABLE();
     // Disable JTAG to free pins for other uses
     // Note - SWD is still enabled
-    __HAL_AFIO_REMAP_SWJ_NOJTAG();
-
+    // __HAL_AFIO_REMAP_SWJ_NOJTAG();
+    __HAL_AFIO_REMAP_SWJ_ENABLE();
     USB_CONNECT_PORT_ENABLE();
     USB_CONNECT_OFF();
     GPIO_InitStructure.Pin = USB_CONNECT_PIN;
@@ -171,7 +171,8 @@ void gpio_init(void)
     GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
     HAL_GPIO_Init(POWER_EN_PIN_PORT, &GPIO_InitStructure);
-
+    nRESET_PIN_PORT->PUPDLOCK = 0xa5a5a5a5;
+	nRESET_PIN_PORT->PUPDEN |= nRESET_PIN;
     // Setup the 8MHz MCO
     GPIO_InitStructure.Pin = GPIO_PIN_8;
     GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -190,20 +191,20 @@ void gpio_init(void)
 
 void gpio_set_hid_led(gpio_led_state_t state)
 {
-    // LED is active low
-    HAL_GPIO_WritePin(PIN_HID_LED_PORT, PIN_HID_LED, state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    // LED is active high
+    HAL_GPIO_WritePin(PIN_HID_LED_PORT, PIN_HID_LED, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 void gpio_set_cdc_led(gpio_led_state_t state)
 {
-    // LED is active low
-    HAL_GPIO_WritePin(PIN_CDC_LED_PORT, PIN_CDC_LED, state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    // LED is active high
+    HAL_GPIO_WritePin(PIN_CDC_LED_PORT, PIN_CDC_LED, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 void gpio_set_msc_led(gpio_led_state_t state)
 {
-    // LED is active low
-    HAL_GPIO_WritePin(PIN_MSC_LED_PORT, PIN_MSC_LED, state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    // LED is active high
+    HAL_GPIO_WritePin(PIN_MSC_LED_PORT, PIN_MSC_LED, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 uint8_t gpio_get_reset_btn_no_fwrd(void)

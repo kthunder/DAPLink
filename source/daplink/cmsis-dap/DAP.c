@@ -63,7 +63,7 @@ volatile uint8_t    DAP_TransferAbort;  // Transfer Abort Flag
 
 static const char DAP_FW_Ver [] = DAP_FW_VER;
 
-
+uint8_t cJtag_enabled = 0; // JTAG enabled flag
 
 // Get DAP Information
 //   id:      info identifier
@@ -457,7 +457,16 @@ static uint32_t DAP_SWJ_Sequence(const uint8_t *request, uint8_t *response) {
   }
 
 #if ((DAP_SWD != 0) || (DAP_JTAG != 0))
+  if (cJtag_enabled) {
+extern void cJTAG_tms(uint32_t bits, uint8_t* ucTMS);
+    USART2->DR = 0xAA;
+    while((USART2->SR & USART_SR_TXE) == 0);
+    cJTAG_tms(count, (uint8_t*)request);
+    USART2->DR = 0xAA;
+    while((USART2->SR & USART_SR_TXE) == 0);
+  }else {
   SWJ_Sequence(count, request);
+  }
   *response = DAP_OK;
 #else
   *response = DAP_ERROR;
@@ -575,6 +584,9 @@ static uint32_t DAP_JTAG_Sequence(const uint8_t *request, uint8_t *response) {
     }
     count = (count + 7U) / 8U;
 #if (DAP_JTAG != 0)
+  if (cJtag_enabled)
+    cJTAG_Sequence(sequence_info, request, response);
+  else
     JTAG_Sequence(sequence_info, request, response);
 #endif
     request += count;

@@ -588,7 +588,7 @@ do{                                         \
 #define UART_CR2_REG_INDEX               2    
 #define UART_CR3_REG_INDEX               3    
 
-#define UART_DIV_SAMPLING16(_PCLK_, _BAUD_)         (((_PCLK_)*25)/(4*(_BAUD_)))
+#define UART_DIV_SAMPLING16(_PCLK_, _BAUD_)         ((((uint32_t)_PCLK_)*25)/(4*(_BAUD_)))
 #define UART_DIVMANT_SAMPLING16(_PCLK_, _BAUD_)     (UART_DIV_SAMPLING16((_PCLK_), (_BAUD_))/100)
 #define UART_DIVFRAQ_SAMPLING16(_PCLK_, _BAUD_)     (((UART_DIV_SAMPLING16((_PCLK_), (_BAUD_)) - (UART_DIVMANT_SAMPLING16((_PCLK_), (_BAUD_)) * 100)) * 16 + 50) / 100)
 /* UART BRR = mantissa + overflow + fraction
@@ -635,7 +635,7 @@ do{                                         \
   *         divided by the smallest oversampling used on the USART (i.e. 16) 
   * Retrun : TRUE or FALSE
   */
-#define IS_UART_BAUDRATE(__BAUDRATE__) ((__BAUDRATE__) < 4500001)
+#define IS_UART_BAUDRATE(__BAUDRATE__) ((__BAUDRATE__) < 21600001)
 
 /** Check UART Node Address
   *         __ADDRESS__: UART Node address specified by the user
